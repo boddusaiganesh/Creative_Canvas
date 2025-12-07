@@ -1,0 +1,592 @@
+/* Professional SaaS Application Layout - Tesco Creative Studio */
+
+.app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%);
+}
+
+/* ============================================================================
+   HEADER - Premium Top Bar
+   ============================================================================ */
+
+.header {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    border-bottom: 1px solid rgba(0, 83, 159, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 0 var(--spacing-xl);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    backdrop-filter: blur(10px);
+    animation: slideInDown 0.3s ease;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1920px;
+    margin: 0 auto;
+    height: 72px;
+    gap: var(--spacing-xl);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    flex: 1;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.header-logo:hover {
+    transform: scale(1.02);
+}
+
+.header-logo svg {
+    color: var(--tesco-red);
+    filter: drop-shadow(0 2px 4px rgba(227, 24, 55, 0.2));
+}
+
+.header-logo h1 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, var(--tesco-blue) 0%, var(--tesco-light-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.header-actions button {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: var(--transition-base);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.compliance-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    transition: var(--transition-base);
+    min-width: 70px;
+    max-width: 100px;
+    height: 52px;
+    flex-shrink: 0;
+}
+
+.compliance-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+}
+
+.compliance-score {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.compliance-badge span:last-child {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================================================
+   MAIN CONTENT - 3-Column Professional Layout
+   ============================================================================ */
+
+.main-content {
+    display: grid;
+    grid-template-columns: 320px 1fr 380px;
+    gap: var(--spacing-lg);
+    flex: 1;
+    padding: var(--spacing-lg);
+    max-width: 1920px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeIn 0.4s ease;
+}
+
+/* ============================================================================
+   SIDEBAR - Left Panel (Asset Library)
+   ============================================================================ */
+
+.sidebar {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 120px);
+    border: 1px solid rgba(0, 83, 159, 0.1);
+    animation: slideInLeft 0.4s ease;
+}
+
+.sidebar-section {
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.sidebar-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--tesco-blue);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.asset-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.asset-item {
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition-base);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--border-light);
+    background: white;
+    position: relative;
+}
+
+.asset-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 83, 159, 0.2);
+    border-color: var(--tesco-blue);
+    z-index: 10;
+}
+
+.asset-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.color-palette {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.color-swatch {
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-base);
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-swatch:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.color-swatch.selected {
+    border-color: var(--tesco-blue);
+    box-shadow: 0 0 0 4px var(--primary-light), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================================
+   CANVAS AREA - Center Panel
+   ============================================================================ */
+
+.canvas-area {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(0, 83, 159, 0.1);
+    animation: scaleIn 0.4s ease;
+}
+
+.canvas-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: linear-gradient(135deg, #F8FAFC 0%, #F0F4F8 100%);
+    border-bottom: 1px solid var(--border-medium);
+}
+
+.canvas-toolbar select {
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-medium);
+    background: white;
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition-base);
+    cursor: pointer;
+}
+
+.canvas-toolbar select:hover {
+    border-color: var(--primary);
+}
+
+.canvas-toolbar button {
+    padding: 8px 12px;
+    font-size: 13px;
+    background: white;
+    border: 2px solid var(--border-medium);
+    color: var(--text-primary);
+    min-width: unset;
+}
+
+.canvas-toolbar button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+.canvas-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+    position: relative;
+    overflow: auto;
+}
+
+.canvas-container canvas {
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================================================
+   RIGHT PANEL - Compliance & Export
+   ============================================================================ */
+
+.right-panel {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 120px);
+    border: 1px solid rgba(0, 83, 159, 0.1);
+    overflow: hidden;
+    animation: slideInRight 0.4s ease;
+}
+
+.panel-section {
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.panel-section h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--tesco-blue);
+}
+
+.compliance-panel {
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.compliance-score {
+    font-size: 56px;
+    font-weight: 800;
+    text-align: center;
+    margin: var(--spacing-lg) 0;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.compliance-score.medium {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.compliance-score.low {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.compliance-issues {
+    margin-top: var(--spacing-lg);
+}
+
+.compliance-issue {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    border-left: 4px solid;
+    animation: slideInLeft 0.3s ease;
+}
+
+.compliance-issue.error {
+    background: var(--error-light);
+    border-color: var(--error);
+}
+
+.compliance-issue.warning {
+    background: var(--warning-light);
+    border-color: var(--warning);
+}
+
+.export-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+/* ============================================================================
+   PREMIUM TAB SYSTEM
+   ============================================================================ */
+
+.tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border-medium);
+    background: linear-gradient(135deg, #F8FAFC 0%, #F0F4F8 100%);
+}
+
+.tab {
+    flex: 1;
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: var(--transition-base);
+    position: relative;
+}
+
+.tab:hover {
+    color: var(--primary);
+    background: rgba(0, 83, 159, 0.05);
+}
+
+.tab.active {
+    color: var(--primary);
+    background: white;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary);
+}
+
+/* ============================================================================
+   PREMIUM TEXT STYLES
+   ============================================================================ */
+
+.btn-text {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    padding: 8px 12px !important;
+    border-radius: var(--radius-md) !important;
+    transition: var(--transition-base) !important;
+}
+
+.btn-text:hover:not(:disabled) {
+    background: var(--bg-hover) !important;
+    color: var(--primary) !important;
+}
+
+small {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 4px;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 1600px) {
+    .main-content {
+        grid-template-columns: 280px 1fr 350px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .main-content {
+        grid-template-columns: 260px 1fr 320px;
+    }
+    
+    .header-content {
+        padding: 0 var(--spacing-lg);
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 1fr 320px;
+    }
+    
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .right-panel {
+        display: none;
+    }
+    
+    .header-logo h1 {
+        font-size: 16px;
+    }
+    
+    .compliance-badge {
+        display: none;
+    }
+}
+
+/* ============================================================================
+   PREMIUM ANIMATIONS
+   ============================================================================ */
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ============================================================================
+   UTILITY CLASSES
+   ============================================================================ */
+
+.flex-1 {
+    flex: 1;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+/* ============================================================================
+   PREMIUM FOCUS STATES
+   ============================================================================ */
+
+*:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ============================================================================
+   PREMIUM SELECTION
+   ============================================================================ */
+
+::selection {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+::-moz-selection {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
