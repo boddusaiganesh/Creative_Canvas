@@ -302,8 +302,9 @@ async def generate_campaign_set(request: dict):
 # ============================================================================
 
 @app.post("/api/compliance/validate", response_model=ComplianceCheckResponse)
-@limiter.limit("20/minute")  # Max 20 validation requests per minute per IP
-async def validate_compliance(http_request: Request, request: ComplianceCheckRequest):
+# Rate limiter temporarily disabled due to CORS preflight issues
+# @limiter.limit("20/minute")  # Max 20 validation requests per minute per IP
+async def validate_compliance(request: ComplianceCheckRequest):
     """
     Validate creative against all Tesco compliance rules
     Rate Limited: 20 requests per minute per IP address

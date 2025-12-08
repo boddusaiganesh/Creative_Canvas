@@ -7,7 +7,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Loader2 } from 'lucide-react';
 
-const LoadingOverlay = ({ isLoading, message = 'Loading...', progress = null }) => {
+const LoadingOverlay = ({ isLoading, message, progress }) => {
+  // Use default values in destructuring
+  const displayMessage = message ?? 'Loading...';
+  const displayProgress = progress ?? null;
+  
   if (!isLoading) return null;
 
   return (
@@ -46,11 +50,11 @@ const LoadingOverlay = ({ isLoading, message = 'Loading...', progress = null }) 
           fontSize: '18px',
           fontWeight: '600',
           color: '#1F2937'
-        }}>
-          {message}
+        }}        >
+          {displayMessage}
         </h3>
         
-        {progress !== null && (
+        {displayProgress !== null && (
           <>
             <div style={{
               width: '100%',
@@ -63,7 +67,7 @@ const LoadingOverlay = ({ isLoading, message = 'Loading...', progress = null }) 
               <div style={{
                 height: '100%',
                 background: 'linear-gradient(90deg, #00539F 0%, #E31837 100%)',
-                width: `${progress}%`,
+                width: `${displayProgress}%`,
                 transition: 'width 0.3s ease',
                 borderRadius: '4px'
               }} />
@@ -73,7 +77,7 @@ const LoadingOverlay = ({ isLoading, message = 'Loading...', progress = null }) 
               fontSize: '14px',
               color: '#6B7280'
             }}>
-              {progress}% complete
+              {displayProgress}% complete
             </p>
           </>
         )}
@@ -101,11 +105,6 @@ LoadingOverlay.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   message: PropTypes.string,
   progress: PropTypes.number,
-};
-
-LoadingOverlay.defaultProps = {
-  message: 'Loading...',
-  progress: null,
 };
 
 export default LoadingOverlay;

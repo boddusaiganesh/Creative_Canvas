@@ -9,9 +9,12 @@ import useCreativeStore from '../store/creativeStore';
 import {exportMultipleFormats} from '../services/api';
 import toast from 'react-hot-toast';
 
-const Header = ({backendStatus = 'unknown'}) => {
+const Header = ({backendStatus}) => {
     const {getCreativeData, complianceResult} = useCreativeStore();
     const [isExporting, setIsExporting] = useState(false);
+    
+    // Use default value
+    const status = backendStatus ?? 'unknown';
 
     const handleExportAll = async () => {
         if (isExporting) return;
@@ -82,7 +85,7 @@ const Header = ({backendStatus = 'unknown'}) => {
     const complianceScore = complianceResult?.compliance_score || 0;
     
     const getStatusIcon = () => {
-        switch (backendStatus) {
+        switch (status) {
             case 'connected':
                 return <Wifi size={16} style={{color: '#10B981'}} />;
             case 'error':
@@ -108,22 +111,22 @@ const Header = ({backendStatus = 'unknown'}) => {
                         alignItems: 'center',
                         gap: '6px',
                         padding: '6px 12px',
-                        background: backendStatus === 'connected' ? '#ECFDF5' : backendStatus === 'error' ? '#FEE2E2' : '#FEF3C7',
+                        background: status === 'connected' ? '#ECFDF5' : status === 'error' ? '#FEE2E2' : '#FEF3C7',
                         borderRadius: '6px',
                         fontSize: '12px',
                         fontWeight: '500',
                     }}>
                         {getStatusIcon()}
                         <span style={{
-                            color: backendStatus === 'connected' ? '#065F46' : backendStatus === 'error' ? '#991B1B' : '#92400E'
+                            color: status === 'connected' ? '#065F46' : status === 'error' ? '#991B1B' : '#92400E'
                         }}>
-                            {backendStatus === 'connected' ? 'Connected' : backendStatus === 'error' ? 'Offline' : 'Connecting...'}
+                            {status === 'connected' ? 'Connected' : status === 'error' ? 'Offline' : 'Connecting...'}
                         </span>
                     </div>
                 </div>
 
                 <div className="header-actions">
-                    <button onClick={handleSave} disabled={backendStatus !== 'connected'}>
+                    <button onClick={handleSave} disabled={status !== 'connected'}>
                         <Save size={18}/>
                         Save
                     </button>
@@ -131,10 +134,10 @@ const Header = ({backendStatus = 'unknown'}) => {
                     <button
                         onClick={handleExportAll}
                         className="btn-primary"
-                        disabled={isExporting || backendStatus !== 'connected'}
+                        disabled={isExporting || status !== 'connected'}
                         style={{
-                            opacity: (isExporting || backendStatus !== 'connected') ? 0.6 : 1,
-                            cursor: (isExporting || backendStatus !== 'connected') ? 'not-allowed' : 'pointer'
+                            opacity: (isExporting || status !== 'connected') ? 0.6 : 1,
+                            cursor: (isExporting || status !== 'connected') ? 'not-allowed' : 'pointer'
                         }}
                     >
                         <Download size={18}/>
@@ -148,10 +151,6 @@ const Header = ({backendStatus = 'unknown'}) => {
 
 Header.propTypes = {
     backendStatus: PropTypes.oneOf(['connected', 'error', 'checking', 'unknown']),
-};
-
-Header.defaultProps = {
-    backendStatus: 'unknown',
 };
 
 export default Header;

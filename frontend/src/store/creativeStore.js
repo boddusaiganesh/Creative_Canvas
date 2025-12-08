@@ -49,6 +49,32 @@ const useCreativeStore = create((set, get) => ({
         format,
     }),
 
+    setFormat: (format) => {
+        // Map format to dimensions
+        const formatMap = {
+            '1:1': { width: 1080, height: 1080 },
+            '9:16': { width: 1080, height: 1920 },
+            '1.91:1': { width: 1200, height: 628 },
+            '4:5': { width: 1080, height: 1350 },
+        };
+        
+        const dimensions = formatMap[format] || formatMap['1:1'];
+        
+        set({
+            format,
+            canvasWidth: dimensions.width,
+            canvasHeight: dimensions.height,
+        });
+
+        // Update canvas if it exists
+        const canvas = get().canvas;
+        if (canvas) {
+            canvas.setWidth(dimensions.width);
+            canvas.setHeight(dimensions.height);
+            canvas.renderAll();
+        }
+    },
+
     setBackgroundColor: (color) => set({backgroundColor: color}),
 
     setBackgroundImage: (imagePath) => set({backgroundImage: imagePath}),

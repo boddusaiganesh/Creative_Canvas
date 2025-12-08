@@ -25,7 +25,11 @@ const CanvasArea = () => {
     } = useCreativeStore();
 
     const [zoom, setZoom] = useState(1);
-    const [selectedFormat, setSelectedFormat] = useState('1:1');
+    
+    // Sync local format with store format
+    useEffect(() => {
+        // Keep local state in sync with store
+    }, [format]);
 
     // Format presets
     const formats = {
@@ -227,7 +231,7 @@ const CanvasArea = () => {
                 <div className="flex gap-sm items-center">
                     <label style={{fontSize: '14px', fontWeight: '500'}}>Format:</label>
                     <select
-                        value={selectedFormat}
+                        value={format}
                         onChange={(e) => handleFormatChange(e.target.value)}
                         style={{width: '200px'}}
                     >

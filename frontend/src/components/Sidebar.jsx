@@ -13,6 +13,8 @@ import ValueTile from './ValueTile';
 import TescoTag from './TescoTag';
 import DrinkwareLockup from './DrinkwareLockup';
 import LayoutSuggestionsModal from './LayoutSuggestionsModal';
+import TemplateModal from './TemplateModal';
+import TextEffects from './TextEffects';
 
 const Sidebar = () => {
     const {
@@ -33,6 +35,10 @@ const Sidebar = () => {
     const fileInputRef = useRef(null);
     const [activeTab, setActiveTab] = useState('assets');
     const [showLayoutModal, setShowLayoutModal] = useState(false);
+    const [showTemplateModal, setShowTemplateModal] = useState(false);
+    const [gradientColor1, setGradientColor1] = useState('#87CEEB');
+    const [gradientColor2, setGradientColor2] = useState('#B0E0E6');
+    const [gradientAngle, setGradientAngle] = useState(180);
 
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
@@ -312,6 +318,131 @@ const Sidebar = () => {
         toast.success('Shape added');
     };
 
+    const handleApplyGradient = () => {
+        if (!canvas) {
+            toast.error('Canvas not initialized');
+            return;
+        }
+
+        const gradient = new fabric.Gradient({
+            type: 'linear',
+            gradientUnits: 'pixels',
+            coords: {
+                x1: 0,
+                y1: 0,
+                x2: canvasWidth * Math.cos(gradientAngle * Math.PI / 180),
+                y2: canvasHeight * Math.sin(gradientAngle * Math.PI / 180),
+            },
+            colorStops: [
+                { offset: 0, color: gradientColor1 },
+                { offset: 1, color: gradientColor2 }
+            ]
+        });
+
+        canvas.setBackgroundColor(gradient, canvas.renderAll.bind(canvas));
+        toast.success('Gradient background applied!');
+    };
+
+    const handleApplyTemplate = (template) => {
+        if (!canvas) {
+            toast.error('Canvas not initialized');
+            return;
+        }
+
+        console.log('Applying template:', template.name);
+        
+        // Clear canvas
+        canvas.clear();
+
+        // Apply background
+        if (template.template.background.type === 'gradient') {
+            const grad = template.template.background.gradient;
+            const gradient = new fabric.Gradient({
+                type: grad.type || 'linear',
+                gradientUnits: 'pixels',
+                coords: grad.type === 'radial' 
+                    ? { x1: canvasWidth/2, y1: canvasHeight/2, r1: 0, x2: canvasWidth/2, y2: canvasHeight/2, r2: canvasWidth/2 }
+                    : {
+                        x1: 0,
+                        y1: 0,
+                        x2: canvasWidth * Math.cos(grad.angle * Math.PI / 180),
+                        y2: canvasHeight * Math.sin(grad.angle * Math.PI / 180),
+                      },
+                colorStops: grad.stops.map(stop => ({ offset: stop.offset, color: stop.color }))
+            });
+            canvas.setBackgroundColor(gradient, canvas.renderAll.bind(canvas));
+        } else {
+            canvas.setBackgroundColor(template.template.background.color, canvas.renderAll.bind(canvas));
+        }
+
+        // Add template elements
+        template.template.elements.forEach(element => {
+            if (element.type === 'image' && element.placeholder) {
+                // Add placeholder rectangle for images
+                const rect = new fabric.Rect({
+                    left: element.x,
+                    top: element.y,
+                    width: element.width,
+                    height: element.height,
+                    fill: 'rgba(200, 200, 200, 0.3)',
+                    stroke: '#9CA3AF',
+                    strokeWidth: 2,
+                    strokeDashArray: [5, 5],
+                    selectable: true,
+                });
+                canvas.add(rect);
+            } else if (element.type === 'text') {
+                const text = new fabric.IText(element.content, {
+                    left: element.x,
+                    top: element.y,
+                    fontSize: element.fontSize,
+                    fill: element.fill,
+                    fontFamily: element.fontFamily,
+                    fontWeight: element.fontWeight,
+                    textAlign: element.textAlign || 'left',
+                    editable: true,
+                    selectable: true,
+                });
+
+                // Add shadow if specified
+                if (element.shadow) {
+                    text.setShadow({
+                        color: element.shadow.color,
+                        blur: element.shadow.blur,
+                        offsetX: element.shadow.offsetX,
+                        offsetY: element.shadow.offsetY,
+                    });
+                }
+
+                canvas.add(text);
+            } else if (element.type === 'rect') {
+                const rect = new fabric.Rect({
+                    left: element.x,
+                    top: element.y,
+                    width: element.width,
+                    height: element.height,
+                    fill: element.fill,
+                    selectable: element.selectable !== false,
+                });
+                canvas.add(rect);
+            } else if (element.type === 'circle') {
+                const circle = new fabric.Circle({
+                    left: element.x,
+                    top: element.y,
+                    radius: element.radius,
+                    fill: element.fill,
+                    stroke: element.stroke,
+                    strokeWidth: element.strokeWidth,
+                    selectable: true,
+                });
+                canvas.add(circle);
+            }
+        });
+
+        canvas.renderAll();
+        toast.success(`Template "${template.name}" applied!`);
+    };
+
     return (
         <aside className="sidebar">
             {/* Tabs */}
@@ -474,12 +605,30 @@ const Sidebar = () => {
                             Generate Layouts
                         </button>
                     </div>
+
+                    {/* Text Effects */}
+                    <TextEffects />
                 </div>
             )}
 
             {/* Colors Tab */}
             {activeTab === 'colors' && (
                 <div className="sidebar-section">
+                    {/* Template Library Button */}
+                    <div style={{marginBottom: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-lg)', borderBottom: '2px solid var(--primary)'}}>
+                        <button 
+                            onClick={() => setShowTemplateModal(true)}
+                            className="btn-primary" 
+                            style={{width: '100%', marginBottom: 'var(--spacing-sm)'}}
+                        >
+                            <Sparkles size={18}/>
+                            Browse Templates
+                        </button>
+                        <small style={{display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center'}}>
+                            Start with professional designs
+                        </small>
+                    </div>
+
                     <h3>Background Color</h3>
 
                     <div className="color-palette">
@@ -503,6 +652,45 @@ const Sidebar = () => {
                         />
                     </div>
 
+                    {/* Gradient Background */}
+                    <div style={{marginTop: 'var(--spacing-xl)', paddingTop: 'var(--spacing-lg)', borderTop: '1px solid var(--border)'}}>
+                        <h3>Gradient Background</h3>
+                        <div style={{display: 'flex', gap: 'var(--spacing-sm)', marginBottom: 'var(--spacing-sm)'}}>
+                            <div style={{flex: 1}}>
+                                <label style={{fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px'}}>Color 1</label>
+                                <input
+                                    type="color"
+                                    value={gradientColor1}
+                                    onChange={(e) => setGradientColor1(e.target.value)}
+                                    style={{width: '100%', height: '40px', cursor: 'pointer'}}
+                                />
+                            </div>
+                            <div style={{flex: 1}}>
+                                <label style={{fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px'}}>Color 2</label>
+                                <input
+                                    type="color"
+                                    value={gradientColor2}
+                                    onChange={(e) => setGradientColor2(e.target.value)}
+                                    style={{width: '100%', height: '40px', cursor: 'pointer'}}
+                                />
+                            </div>
+                        </div>
+                        <div style={{marginBottom: 'var(--spacing-sm)'}}>
+                            <label style={{fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px'}}>Angle: {gradientAngle}°</label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="360"
+                                value={gradientAngle}
+                                onChange={(e) => setGradientAngle(parseInt(e.target.value))}
+                                style={{width: '100%'}}
+                            />
+                        </div>
+                        <button onClick={handleApplyGradient} className="btn-primary" style={{width: '100%'}}>
+                            Apply Gradient
+                        </button>
+                    </div>
+
                     <div style={{marginTop: 'var(--spacing-lg)'}}>
                         <h3>Brand Colors</h3>
                         <div className="color-palette">
@@ -523,6 +711,14 @@ const Sidebar = () => {
             <LayoutSuggestionsModal 
                 isOpen={showLayoutModal} 
                 onClose={() => setShowLayoutModal(false)} 
+            />
+
+            {/* Template Library Modal */}
+            <TemplateModal
+                isOpen={showTemplateModal}
+                onClose={() => setShowTemplateModal(false)}
+                onApplyTemplate={handleApplyTemplate}
+                currentFormat={format}
             />
         </aside>
     );

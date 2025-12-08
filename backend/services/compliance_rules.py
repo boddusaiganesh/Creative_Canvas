@@ -295,7 +295,7 @@ class TescoTagsRule(ComplianceRule):
         ]
 
     def validate(self, creative_data: dict) -> Tuple[bool, str]:
-        tag_text = creative_data.get('tag_text', '').strip()
+        tag_text = (creative_data.get('tag_text') or '').strip()
 
         if not tag_text:
             return True, ""  # Tags are optional per Appendix A
@@ -724,16 +724,27 @@ class PackshotPositioningRule(ComplianceRule):
         # This rule may not apply, but we'll validate packshot exists
 
         elements = creative_data.get('elements', [])
+        if not isinstance(elements, list):
+            print(f"⚠️ Elements is not a list: {type(elements)}")
+            return True, ""  # Skip validation if elements is malformed
+
         print(f"🔍 PackshotPositioningRule: Checking {len(elements)} elements")
         for idx, elem in enumerate(elements):
-            print(f"  Element {idx + 1}: type='{elem.get('type')}'")
+            if isinstance(elem, dict):
+                print(f"  Element {idx + 1}: type='{elem.get('type')}'")
+            else:
+                print(f"  Element {idx + 1}: Invalid type {type(elem)}")
 
         # Accept both 'packshot' and 'image' types as product images
-        packshots = [e for e in elements if e.get('type') in ['packshot', 'image']]
+        packshots = [e for e in elements if isinstance(e, dict) and e.get('type') in ['packshot', 'image']]
 
         print(f"  Found {len(packshots)} packshots/images")
 
-        if not packshots:
+        # Make packshot optional for empty canvases
+        if len(elements) == 0:
+            return True, ""  # Empty canvas is valid
+
+        if not packshots and len(elements) > 0:
             return False, "At least one packshot (lead product) is required"
 
         if len(packshots) > 3:

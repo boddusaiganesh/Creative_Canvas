@@ -6,16 +6,82 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { X, Download, TrendingUp } from 'lucide-react';
+import useCreativeStore from '../store/creativeStore';
 import toast from 'react-hot-toast';
 
 const CampaignModal = ({ isOpen, onClose, campaignData }) => {
+  const { canvas, setFormat, setBackgroundColor } = useCreativeStore();
+  
   if (!isOpen || !campaignData) return null;
 
   const { variations, campaign_theme, ab_test_recommendation } = campaignData;
 
   const downloadVariation = (variation) => {
-    toast.success(`Campaign set for ${variation.channel} ready!`);
-    // In real app, this would trigger export for this specific variation
+    console.log('🎯 Applying campaign variation:', variation);
+    if (!canvas) {
+      toast.error('Canvas not initialized');
+      return;
+    }
+    try {
+      // 1. Format
+      setFormat(variation.format);
+
+      // 2. Background
+      if (variation.background_color) {
+        setBackgroundColor(variation.background_color);
+        canvas.backgroundColor = variation.background_color;
+      }
+
+      // 3. Gather current objects (image, text, etc.)
+      const objects = canvas.getObjects();
+      let foundImage = null;
+      let foundHeadline = null;
+      let foundText = null;
+      
+      for (const obj of objects) {
+        if (!foundImage && obj.type === 'image') foundImage = obj;
+        if (!foundHeadline && (obj.type === 'textbox' || obj.type === 'i-text' || obj.type === 'text')) foundHeadline = obj;
+        // for subhead logic, consider using another text if present
+      }
+      
+      // 4. Apply product/image position
+      if (foundImage && variation.product_position) {
+        foundImage.set({
+          left: variation.product_position.x,
+          top: variation.product_position.y,
+          scaleX: variation.product_position.width / foundImage.width,
+          scaleY: variation.product_position.height / foundImage.height,
+        });
+        foundImage.setCoords();
+        console.log('✅ Product/image positioned.');
+      } else {
+        console.log('ℹ️ No image found or product_position missing.');
+      }
+      
+      // 5. Apply headline position & font size
+      if (foundHeadline && variation.headline_position) {
+        foundHeadline.set({
+          left: variation.headline_position.x,
+          top: variation.headline_position.y,
+          fontSize: variation.headline_position.fontSize || foundHeadline.fontSize,
+        });
+        foundHeadline.setCoords();
+        if (variation.subhead && typeof variation.subhead === 'string') {
+          foundHeadline.set({ text: variation.subhead });
+        }
+        console.log('✅ Headline positioned and updated');
+      } else {
+        console.log('ℹ️ No text object or headline_position missing.');
+      }
+      // 6. Render all
+      canvas.renderAll();
+      // 7. Success
+      toast.success(`✅ Applied ${variation.channel} variation! (${variation.format})`);
+      onClose();
+    } catch (error) {
+      console.error('❌ Error applying variation:', error);
+      toast.error('Failed to apply variation');
+    }
   };
 
   const getFormatIcon = (format) => {
