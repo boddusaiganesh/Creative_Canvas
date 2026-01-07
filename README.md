@@ -7,6 +7,10 @@ retail media creatives for Tesco campaigns.
 
 ---
 
+## 📄 Resume
+Resume (PDF):  
+https://github.com/boddusaiganesh/Creative_Canvas/blob/main/Ai_Resume.pdf
+
 ## 🎯 Features
 
 ### ✅ **Core Features (MVP)**
@@ -361,4 +365,4 @@ For issues or questions, please check the troubleshooting section above.
 
 ---
 
-**Built for Tesco Retail Media Hackathon 2024** 🎉
+**Built for Tesco Retail Media Hackathon 2025** 🎉
